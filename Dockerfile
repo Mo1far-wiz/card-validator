@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.23
+# first image (stage) with everything
+
+FROM golang:1.23 AS building
 
 WORKDIR /app
 
@@ -11,7 +13,16 @@ COPY . .
 
 RUN go build -o /app/bin/main /app/cmd/api/
 
+# second image optimized in size
+
+FROM golang:1.23 AS runtime
+
+WORKDIR /app
+
+COPY --from=building /app/bin/main .
+# COPY --from=building /app/.env .
+
 EXPOSE 8080
 
-CMD ["/app/bin/main"]
+ENTRYPOINT ["./main"]
 

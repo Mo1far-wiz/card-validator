@@ -11,7 +11,7 @@ import (
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
 	}
 }
 
