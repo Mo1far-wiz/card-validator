@@ -1,6 +1,7 @@
 package main
 
 import (
+	"card-validator/cmd/controllers"
 	"log"
 	"net/http"
 	"time"
@@ -44,8 +45,8 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.Timeout(time.Minute))
 
 	r.Route("/v1", func(r chi.Router) {
-		r.Get("/health", app.healthCheckHandler)
-		r.Post("/validate-card", app.validateCardHandler)
+		r.Get("/health", controllers.HealthCheckHandler)
+		r.Post("/validate-card", controllers.ValidateCardHandler)
 	})
 
 	return r

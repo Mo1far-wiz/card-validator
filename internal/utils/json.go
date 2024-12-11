@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"encoding/json"
@@ -20,7 +20,7 @@ func writeJSON(w http.ResponseWriter, status int, data any) error {
 	return json.NewEncoder(w).Encode(data)
 }
 
-func readJSON(w http.ResponseWriter, r *http.Request, data any) error {
+func ReadJSON(w http.ResponseWriter, r *http.Request, data any) error {
 	maxBytes := 1_048_578 // 1 mb
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
 
@@ -30,14 +30,6 @@ func readJSON(w http.ResponseWriter, r *http.Request, data any) error {
 	return decoder.Decode(data)
 }
 
-func writeJSONError(w http.ResponseWriter, status int, message string) error {
-	type envelope struct {
-		Error string `json:"error"`
-	}
-
-	return writeJSON(w, status, &envelope{Error: message})
-}
-
-func (app *application) jsonResponse(w http.ResponseWriter, status int, data any) error {
+func ResponseJSON(w http.ResponseWriter, status int, data any) error {
 	return writeJSON(w, status, &data)
 }

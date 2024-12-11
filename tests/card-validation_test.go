@@ -1,61 +1,157 @@
-package main
+package tests
 
 import (
+	"card-validator/cmd/controllers"
 	"card-validator/internal/models"
+	"card-validator/internal/validator"
+	"errors"
 	"testing"
 )
 
-func TestCardExpDateValidation(t *testing.T) {
-	tests := []struct {
-		name     string
-		card     models.Card
-		wantErr  bool
-		errorMsg string
-	}{
+func SetupValidator() {
+	controllers.CardValidator = validator.NewCardValidator(&TestCreditCardValidator{})
+}
+
+func TestValidCards(t *testing.T) {
+	SetupValidator()
+
+	tests := []models.Card{
 		{
-			name: "Valid card",
-			card: models.Card{
-				CardNumber: "3714-4963-5398-431",
-				ExpMonth:   12,
-				ExpYear:    2025,
-			},
-			wantErr: false,
+			CardNumber: "3714-4963-5398-431",
+			ExpMonth:   1,
+			ExpYear:    2025,
 		},
 		{
-			name: "Expired card",
-			card: models.Card{
-				CardNumber: "3714-4963-5398-431",
-				ExpMonth:   12,
-				ExpYear:    2020,
-			},
-			wantErr:  true,
-			errorMsg: "card is expired",
+			CardNumber: "3550998650131033",
+			ExpMonth:   12,
+			ExpYear:    2028,
 		},
 		{
-			name: "Invalid expiration date",
-			card: models.Card{
-				CardNumber: "3714-4963-5398-431",
-				ExpMonth:   13,
-				ExpYear:    2024,
-			},
-			wantErr:  true,
-			errorMsg: "parsing time",
+			CardNumber: "4457010000000009",
+			ExpMonth:   4,
+			ExpYear:    2027,
+		},
+		{
+			CardNumber: "5167-0010-2023-6549",
+			ExpMonth:   8,
+			ExpYear:    2026,
 		},
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.card.Validate()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Validate() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if tt.wantErr && err != nil && !contains(err.Error(), tt.errorMsg) {
-				t.Errorf("Expected error message to contain '%s', got '%s'", tt.errorMsg, err.Error())
+		t.Run("Valid Card", func(t *testing.T) {
+			err := controllers.CardValidator.Validate(tt)
+			if err != nil {
+				t.Errorf("Card %v expected to be Valid; Err: %s", tt, err.Error())
 			}
 		})
 	}
 }
 
-func contains(s, substr string) bool {
-	return len(s) >= len(substr) && (s[:len(substr)] == substr || contains(s[1:], substr))
+func TestExpiredCards(t *testing.T) {
+	SetupValidator()
+
+	tests := []models.Card{
+		{
+			CardNumber: "3714-4963-5398-431",
+			ExpMonth:   1,
+			ExpYear:    2023,
+		},
+		{
+			CardNumber: "3550998650131033",
+			ExpMonth:   11,
+			ExpYear:    2024,
+		},
+		{
+			CardNumber: "4457010000000009",
+			ExpMonth:   12,
+			ExpYear:    2022,
+		},
+		{
+			CardNumber: "5167-0010-2023-6549",
+			ExpMonth:   7,
+			ExpYear:    2016,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run("Expired Card", func(t *testing.T) {
+			err := controllers.CardValidator.Validate(tt)
+			if !errors.Is(err, validator.ErrorCardExpired) {
+				t.Errorf("Card %v expected to have error %s; Err: %s", tt, validator.ErrorCardExpired.Error(), err.Error())
+			}
+		})
+	}
+}
+
+func TestWrongCardNumbers(t *testing.T) {
+	SetupValidator()
+
+	tests := []models.Card{
+		{
+			CardNumber: "3715-4964-5398-432",
+			ExpMonth:   1,
+			ExpYear:    2025,
+		},
+		{
+			CardNumber: "3551998650131033",
+			ExpMonth:   12,
+			ExpYear:    2028,
+		},
+		{
+			CardNumber: "445701000000009",
+			ExpMonth:   4,
+			ExpYear:    2027,
+		},
+		{
+			CardNumber: "5167-0011-2023-6549",
+			ExpMonth:   8,
+			ExpYear:    2026,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run("Wrong Card Number", func(t *testing.T) {
+			err := controllers.CardValidator.Validate(tt)
+			if !errors.Is(err, validator.ErrorWrongCardNumber) {
+				t.Errorf("Card %v expected to have error %s; Err: %s", tt, validator.ErrorWrongCardNumber.Error(), err.Error())
+			}
+		})
+	}
+}
+
+func TestMonthOutOfRange(t *testing.T) {
+	SetupValidator()
+
+	tests := []models.Card{
+		{
+			CardNumber: "3714-4963-5398-431",
+			ExpMonth:   -1,
+			ExpYear:    2025,
+		},
+		{
+			CardNumber: "3550998650131033",
+			ExpMonth:   13,
+			ExpYear:    2028,
+		},
+		{
+			CardNumber: "4457010000000009",
+			ExpMonth:   14,
+			ExpYear:    2027,
+		},
+		{
+			CardNumber: "5167-0010-2023-6549",
+			ExpMonth:   18,
+			ExpYear:    2026,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run("Month Out Of Range", func(t *testing.T) {
+			err := controllers.CardValidator.Validate(tt)
+			if !errors.Is(err, validator.ErrorOnParsingExpirationDate) {
+				t.Errorf("Card %v expected to have error %s; Err: %s", tt, validator.ErrorOnParsingExpirationDate.Error(), err.Error())
+			}
+		})
+	}
 }
