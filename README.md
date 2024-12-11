@@ -39,3 +39,37 @@ Project contains Dockerfile and Docker-compose files for easier deployment (also
 For me size of the created image was approximately ~850 mb.
 
 ! Dockerfile exposes port 8080.
+
+## File structure
+```
+.
+├── Dockerfile
+├── README.md
+├── cmd
+│   ├── api
+│   │   ├── api.go
+│   │   └── main.go
+│   └── controllers
+│       ├── errors.go
+│       ├── health.go
+│       └── validate-card.go
+├── docker-compose.yaml
+├── go.mod
+├── go.sum
+├── internal
+│   ├── env
+│   │   └── env.go
+│   ├── models
+│   │   └── card.go
+│   ├── utils
+│   │   ├── json.go
+│   │   └── luhn-alg.go
+│   └── validator
+│       ├── card-validator-adapter.go
+│       ├── credit-card-validator.go
+│       └── errors.go
+└── tests
+    ├── card-validation_test.go
+    ├── luhn-alg_test.go
+    └── test-validator.go
+```
