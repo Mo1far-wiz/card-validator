@@ -8,11 +8,12 @@ import (
 	"time"
 )
 
-type TestCreditCardValidator struct{}
+type TestCreditCardValidator struct {
+	// it is needed to be independent from time.Now() and don't change tests each month
+	TimeNow time.Time
+}
 
 const expDateLayout = "2006-01"
-
-var TimeNow = time.Date(2024, 12, 12, 10, 0, 0, 0, time.UTC)
 
 func (cv *TestCreditCardValidator) Validate(c models.Card) error {
 	cardExpDate := fmt.Sprintf("%04d-%02d", c.ExpYear, c.ExpMonth)
@@ -20,7 +21,7 @@ func (cv *TestCreditCardValidator) Validate(c models.Card) error {
 	if err != nil {
 		return validator.ErrorOnParsingExpirationDate
 	}
-	if !expDate.After(TimeNow) {
+	if !expDate.After(cv.TimeNow) {
 		return validator.ErrorCardExpired
 	}
 

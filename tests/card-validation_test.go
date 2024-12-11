@@ -6,10 +6,13 @@ import (
 	"card-validator/internal/validator"
 	"errors"
 	"testing"
+	"time"
 )
 
 func SetupValidator() {
-	controllers.CardValidator = validator.NewCardValidator(&TestCreditCardValidator{})
+	controllers.CardValidator = validator.NewCardValidator(&TestCreditCardValidator{
+		TimeNow: time.Date(2024, 12, 12, 10, 0, 0, 0, time.UTC),
+	})
 }
 
 func TestValidCards(t *testing.T) {
