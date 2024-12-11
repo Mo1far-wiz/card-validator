@@ -8,12 +8,6 @@ import (
 	"time"
 )
 
-var (
-	ErrorWrongCardNumber         = NewValidationError(1, "card number is wrong")
-	ErrorCardExpired             = NewValidationError(2, "card is expired")
-	ErrorOnParsingExpirationDate = NewValidationError(3, "encountered error on expiration date parsing")
-)
-
 type CreditCardValidator struct {
 	Logger *log.Logger
 }

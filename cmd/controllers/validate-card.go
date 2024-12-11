@@ -62,8 +62,10 @@ func ValidateCardHandler(w http.ResponseWriter, r *http.Request) {
 			resp.Error = &errorResponse{Code: validator.ErrorWrongCardNumber.Code, Message: validator.ErrorWrongCardNumber.Message}
 		case errors.Is(err, validator.ErrorCardExpired):
 			resp.Error = &errorResponse{Code: validator.ErrorCardExpired.Code, Message: validator.ErrorCardExpired.Message}
-		default:
+		case errors.Is(err, validator.ErrorOnParsingExpirationDate):
 			resp.Error = &errorResponse{Code: validator.ErrorOnParsingExpirationDate.Code, Message: validator.ErrorOnParsingExpirationDate.Message}
+		default:
+			resp.Error = &errorResponse{Code: 0, Message: "unknown validation error: " + err.Error()}
 		}
 	}
 
