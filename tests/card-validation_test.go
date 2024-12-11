@@ -123,7 +123,7 @@ func TestWrongCardNumbers(t *testing.T) {
 	}
 }
 
-func TestMonthOutOfRange(t *testing.T) {
+func TestMonthOrYearOutOfRange(t *testing.T) {
 	SetupValidator()
 
 	tests := []models.Card{
@@ -134,8 +134,8 @@ func TestMonthOutOfRange(t *testing.T) {
 		},
 		{
 			CardNumber: "3550998650131033",
-			ExpMonth:   13,
-			ExpYear:    2028,
+			ExpMonth:   1,
+			ExpYear:    -1,
 		},
 		{
 			CardNumber: "4457010000000009",
