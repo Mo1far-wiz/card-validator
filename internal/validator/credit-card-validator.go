@@ -25,13 +25,11 @@ func (cv *CreditCardValidator) Validate(c models.Card) error {
 	}
 	if !expDate.After(time.Now()) {
 		cv.Logger.Printf("Card: %v has problems with expiration date", c)
-
 		return ErrorCardExpired
 	}
 
 	if !utils.CheckLuhn(c.CardNumber) {
 		cv.Logger.Printf("Card: %v has problems with card number", c)
-
 		return ErrorWrongCardNumber
 	}
 
