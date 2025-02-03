@@ -36,7 +36,7 @@ go test ./tests -v
 
 Project contains Dockerfile and Docker-compose files for easier deployment (also it was requirement 😁).
 
-For me size of the created image was approximately ~850 mb.
+For me size of the created image was approximately ~250 mb.
 
 ! Dockerfile exposes port 8080.
 
