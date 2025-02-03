@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"card-validator/internal/utils"
+	luhn "card-validator/internal/utils/luhn"
 	"testing"
 )
 
@@ -37,7 +37,7 @@ func TestIsCodeOk(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := utils.CheckLuhn(tt.input)
+			result := luhn.CheckLuhn(tt.input)
 			if result != tt.expected {
 				t.Errorf("IsCodeOk(%q) = %v, want %v", tt.input, result, tt.expected)
 			}

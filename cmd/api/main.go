@@ -1,7 +1,8 @@
 package main
 
 import (
-	"card-validator/internal/env"
+	"card-validator/internal/api"
+	"card-validator/internal/config"
 	"log"
 	"time"
 
@@ -18,18 +19,18 @@ func init() {
 const Version = "0.0.1"
 
 func main() {
-	cfg := config{
-		addr:         env.GetString("PORT", ":8080"),
+	cfg := api.Config{
+		Addr:         config.GetString("PORT", ":8080"),
 		WriteTimeout: time.Second * 30,
 		ReadTimeout:  time.Second * 10,
 		IdleTimeout:  time.Minute,
 	}
 
-	app := application{
-		config: cfg,
+	app := api.Application{
+		Config: cfg,
 	}
 
-	mux := app.mount()
+	mux := app.Mount()
 
-	log.Fatal(app.run(mux))
+	log.Fatal(app.Run(mux))
 }

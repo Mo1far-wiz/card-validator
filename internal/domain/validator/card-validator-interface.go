@@ -1,6 +1,6 @@
 package validator
 
-import "card-validator/internal/models"
+import "card-validator/internal/domain/models"
 
 var (
 	ErrorWrongCardNumber         = NewValidationError(1, "card number is wrong")

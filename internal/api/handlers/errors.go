@@ -1,7 +1,7 @@
-package controllers
+package handlers
 
 import (
-	"card-validator/internal/utils"
+	json "card-validator/internal/utils/json"
 	"log"
 	"net/http"
 )
@@ -17,7 +17,7 @@ func internalServerError(w http.ResponseWriter, r *http.Request, err error) {
 		},
 	}
 
-	utils.ResponseJSON(w, http.StatusInternalServerError, resp)
+	json.ResponseJSON(w, http.StatusInternalServerError, resp)
 }
 
 func badRequestError(w http.ResponseWriter, r *http.Request, err error) {
@@ -31,5 +31,5 @@ func badRequestError(w http.ResponseWriter, r *http.Request, err error) {
 		},
 	}
 
-	utils.ResponseJSON(w, http.StatusBadRequest, resp)
+	json.ResponseJSON(w, http.StatusBadRequest, resp)
 }

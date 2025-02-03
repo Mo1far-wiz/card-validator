@@ -1,7 +1,7 @@
-package controllers
+package handlers
 
 import (
-	"card-validator/internal/utils"
+	json "card-validator/internal/utils/json"
 	"net/http"
 )
 
@@ -10,7 +10,7 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 		"status": "healthy",
 	}
 
-	if err := utils.ResponseJSON(w, http.StatusOK, data); err != nil {
+	if err := json.ResponseJSON(w, http.StatusOK, data); err != nil {
 		internalServerError(w, r, err)
 	}
 }

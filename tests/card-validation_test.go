@@ -1,16 +1,16 @@
 package tests
 
 import (
-	"card-validator/cmd/controllers"
-	"card-validator/internal/models"
-	"card-validator/internal/validator"
+	"card-validator/internal/api/handlers"
+	"card-validator/internal/domain/models"
+	"card-validator/internal/domain/validator"
 	"errors"
 	"testing"
 	"time"
 )
 
 func SetupValidator() {
-	controllers.CardValidator = validator.NewCardValidator(&TestCreditCardValidator{
+	handlers.CardValidator = validator.NewCardValidator(&TestCreditCardValidator{
 		TimeNow: time.Date(2024, 12, 12, 10, 0, 0, 0, time.UTC),
 	})
 }
@@ -43,7 +43,7 @@ func TestValidCards(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run("Valid Card", func(t *testing.T) {
-			err := controllers.CardValidator.Validate(tt)
+			err := handlers.CardValidator.Validate(tt)
 			if err != nil {
 				t.Errorf("Card %v expected to be Valid; Err: %s", tt, err.Error())
 			}
@@ -79,7 +79,7 @@ func TestExpiredCards(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run("Expired Card", func(t *testing.T) {
-			err := controllers.CardValidator.Validate(tt)
+			err := handlers.CardValidator.Validate(tt)
 			if !errors.Is(err, validator.ErrorCardExpired) {
 				t.Errorf("Card %v expected to have error %s; Err: %s", tt, validator.ErrorCardExpired.Error(), err.Error())
 			}
@@ -115,7 +115,7 @@ func TestWrongCardNumbers(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run("Wrong Card Number", func(t *testing.T) {
-			err := controllers.CardValidator.Validate(tt)
+			err := handlers.CardValidator.Validate(tt)
 			if !errors.Is(err, validator.ErrorWrongCardNumber) {
 				t.Errorf("Card %v expected to have error %s; Err: %s", tt, validator.ErrorWrongCardNumber.Error(), err.Error())
 			}
@@ -151,7 +151,7 @@ func TestMonthOrYearOutOfRange(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run("Month Out Of Range", func(t *testing.T) {
-			err := controllers.CardValidator.Validate(tt)
+			err := handlers.CardValidator.Validate(tt)
 			if !errors.Is(err, validator.ErrorOnParsingExpirationDate) {
 				t.Errorf("Card %v expected to have error %s; Err: %s", tt, validator.ErrorOnParsingExpirationDate.Error(), err.Error())
 			}

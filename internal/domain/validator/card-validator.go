@@ -1,8 +1,8 @@
 package validator
 
 import (
-	"card-validator/internal/models"
-	"card-validator/internal/utils"
+	"card-validator/internal/domain/models"
+	luhn "card-validator/internal/utils/luhn"
 	"fmt"
 	"log"
 	"time"
@@ -28,7 +28,7 @@ func (cv *CreditCardValidator) Validate(c models.Card) error {
 		return ErrorCardExpired
 	}
 
-	if !utils.CheckLuhn(c.CardNumber) {
+	if !luhn.CheckLuhn(c.CardNumber) {
 		cv.Logger.Printf("Card: %v has problems with card number", c)
 		return ErrorWrongCardNumber
 	}

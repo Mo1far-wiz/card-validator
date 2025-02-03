@@ -1,9 +1,9 @@
-package controllers
+package handlers
 
 import (
-	"card-validator/internal/models"
-	"card-validator/internal/utils"
-	"card-validator/internal/validator"
+	"card-validator/internal/domain/models"
+	"card-validator/internal/domain/validator"
+	json "card-validator/internal/utils/json"
 	"errors"
 	"log"
 	"net/http"
@@ -41,12 +41,12 @@ func init() {
 func ValidateCardHandler(w http.ResponseWriter, r *http.Request) {
 
 	var req request
-	if err := utils.ReadJSON(w, r, &req); err != nil {
+	if err := json.ReadJSON(w, r, &req); err != nil {
 		badRequestError(w, r, err)
 		return
 	}
 
-	if err := utils.Validate.Struct(req); err != nil {
+	if err := json.Validate.Struct(req); err != nil {
 		badRequestError(w, r, err)
 		return
 	}
@@ -71,7 +71,7 @@ func ValidateCardHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp.Valid = err == nil
 
-	if err := utils.ResponseJSON(w, http.StatusOK, resp); err != nil {
+	if err := json.ResponseJSON(w, http.StatusOK, resp); err != nil {
 		internalServerError(w, r, err)
 	}
 }

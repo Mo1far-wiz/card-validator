@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"card-validator/internal/models"
-	"card-validator/internal/utils"
-	"card-validator/internal/validator"
+	"card-validator/internal/domain/models"
+	"card-validator/internal/domain/validator"
+	luhn "card-validator/internal/utils/luhn"
 	"fmt"
 	"time"
 )
@@ -25,7 +25,7 @@ func (cv *TestCreditCardValidator) Validate(c models.Card) error {
 		return validator.ErrorCardExpired
 	}
 
-	if !utils.CheckLuhn(c.CardNumber) {
+	if !luhn.CheckLuhn(c.CardNumber) {
 		return validator.ErrorWrongCardNumber
 	}
 	return nil
