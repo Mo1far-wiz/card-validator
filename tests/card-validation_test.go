@@ -4,13 +4,14 @@ import (
 	"card-validator/internal/api/handlers"
 	"card-validator/internal/domain/models"
 	"card-validator/internal/domain/validator"
+	"card-validator/tests/mock"
 	"errors"
 	"testing"
 	"time"
 )
 
 func SetupValidator() {
-	handlers.CardValidator = validator.NewCardValidator(&TestCreditCardValidator{
+	handlers.CardValidator = validator.NewCardValidator(&mock.Validator{
 		TimeNow: time.Date(2024, 12, 12, 10, 0, 0, 0, time.UTC),
 	})
 }
