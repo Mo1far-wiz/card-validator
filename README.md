@@ -46,30 +46,35 @@ For me size of the created image was approximately ~850 mb.
 ├── Dockerfile
 ├── README.md
 ├── cmd
-│   ├── api
-│   │   ├── api.go
-│   │   └── main.go
-│   └── controllers
-│       ├── errors.go
-│       ├── health.go
-│       └── validate-card.go
+│   └── api
+│       └── main.go
 ├── docker-compose.yaml
 ├── go.mod
 ├── go.sum
 ├── internal
-│   ├── env
+│   ├── api
+│   │   ├── api.go
+│   │   └── handlers
+│   │       ├── errors.go
+│   │       ├── health.go
+│   │       └── validate-card.go
+│   ├── config
 │   │   └── env.go
-│   ├── models
-│   │   └── card.go
-│   ├── utils
-│   │   ├── json.go
-│   │   └── luhn-alg.go
-│   └── validator
-│       ├── card-validator-adapter.go
-│       ├── credit-card-validator.go
-│       └── errors.go
+│   ├── domain
+│   │   ├── models
+│   │   │   └── card.go
+│   │   └── validator
+│   │       ├── card-validator-interface.go
+│   │       ├── card-validator.go
+│   │       └── errors.go
+│   └── utils
+│       ├── json
+│       │   └── json.go
+│       └── luhn
+│           └── algorithm.go
 └── tests
     ├── card-validation_test.go
     ├── luhn-alg_test.go
-    └── test-validator.go
+    └── mock
+        └── validator.go
 ```
