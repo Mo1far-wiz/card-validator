@@ -9,10 +9,6 @@ import (
 
 var Validate *validator.Validate
 
-func init() {
-	Validate = validator.New(validator.WithRequiredStructEnabled())
-}
-
 func writeJSON(w http.ResponseWriter, status int, data any) error {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(status)

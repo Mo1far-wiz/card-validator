@@ -5,9 +5,7 @@ import (
 	"card-validator/internal/domain/validator"
 	json "card-validator/internal/utils/json"
 	"errors"
-	"log"
 	"net/http"
-	"os"
 )
 
 type (
@@ -27,16 +25,6 @@ type (
 )
 
 var CardValidator validator.CardValidator
-
-func init() {
-	logger := log.New(os.Stdout, "Custom INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-
-	v := &validator.CreditCardValidator{
-		Logger: logger,
-	}
-
-	CardValidator = validator.NewCardValidator(v)
-}
 
 func ValidateCardHandler(w http.ResponseWriter, r *http.Request) {
 
