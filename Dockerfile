@@ -1,8 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # first image (stage) with everything
-
-FROM golang:1.23 AS building
+FROM golang:1.23-alpine AS building
 
 WORKDIR /app
 
@@ -14,8 +13,7 @@ COPY . .
 RUN go build -o /app/bin/main /app/cmd/api/
 
 # second image optimized in size
-
-FROM golang:1.23 AS runtime
+FROM golang:1.23-alpine AS runtime
 
 WORKDIR /app
 
