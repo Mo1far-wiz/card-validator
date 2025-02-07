@@ -6,8 +6,12 @@ import (
 	"card-validator/internal/config"
 	"card-validator/internal/domain/validator"
 	json "card-validator/internal/utils/json"
+	"context"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	json_validator "github.com/go-playground/validator/v10"
@@ -43,5 +47,32 @@ func main() {
 
 	mux := app.Mount()
 
-	log.Fatal(app.Run(mux))
+	// Graceful Shutdown
+	server := http.Server{
+		Addr:    app.Config.Addr,
+		Handler: mux,
+	}
+
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+	log.Print("Server Started")
+
+	<-done
+	log.Print("Server Stopped")
+
+	// shutdown context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// Gracefully shutdown
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatalf("Server Shutdown Failed:%+v", err)
+	}
+	log.Print("Server Exited Properly")
 }
